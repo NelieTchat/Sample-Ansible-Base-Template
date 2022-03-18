@@ -1,0 +1,47 @@
+- name: #Install Apache Webserver on Ubuntu
+  hosts: ubuntu
+  become: yes
+
+  tasks: # let's make is a list because it's a set of task
+    - name: Upgrade software packages
+      apt: #module
+        name: '*'
+        state: latest
+    - name: ensure apache is at the latest version
+      apt:
+        name: apache2
+        state: present
+    - name: Start Apache # systemclt start httpd
+      ansible.builtin.service:
+        name: apache2
+        state: started
+    - name: Enable service apache2, and not touch the state
+      ansible.builtin.service: # systemclt enable httpd
+        name: apache2
+        enabled: yes
+    - name: copy index.html file from the controller to the client
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html
+    - name: Displaying custom message
+      ansible.builtin.debug:
+        msg: "It says Ubuntu!!! Having fun with Ansible. Give yourself rewards when you genuinely become excited about it."
+    - name: Pinging ubuntu
+      ansible.builtin.ping:
+
+
+- name: #  Install GIT on all Ubuntu Hosts
+  hosts: ubuntu
+  become: yes
+  
+  tasks:
+    - name: Updates apt cache
+      action: apt update_cache=true
+    - name: Install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+    
+   
+       
